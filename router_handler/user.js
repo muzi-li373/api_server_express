@@ -5,9 +5,9 @@ const bcrypt = require("bcryptjs");
 // 注册新用户
 exports.regUser = (req, res) => {
   const { username, password } = req.body; // 获取客户端提交到服务器的用户名和密码
-  if (!username || !password) {
-    return res.send({ status: 1, message: "用户名或密码不能为空" });
-  }
+  // if (!username || !password) {
+  //   return res.send({ status: 1, message: "用户名或密码不能为空" });
+  // }
 
   // 定义sql,查询用户名是否被占用
   const sqlSrt = "select * from ev_users where username=?";

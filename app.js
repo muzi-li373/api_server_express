@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const userRouter = require("./router/user"); // 用户路由
+const joi = require("@hapi/joi");
 
 const app = express();
 const port = 3007;
@@ -23,6 +24,17 @@ app.use(function (req, res, next) {
 
 // 挂载路由
 app.use("/api", userRouter);
+
+// 定义错误级别的中间件
+app.use((err, req, res, next) => {
+  // joi验证失败
+  if (err instanceof joi.ValidationError) {
+    return res.cc(err);
+  }
+
+  // 位置错误
+  res.cc(err);
+});
 
 // 服务器
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
