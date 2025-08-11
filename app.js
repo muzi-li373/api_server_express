@@ -1,7 +1,10 @@
 const express = require("express");
 const cors = require("cors");
 const userRouter = require("./router/user"); // 用户路由
+// 引入Joi进行数据的验证
 const joi = require("@hapi/joi");
+const expressJWT = require("express-jwt"); // 解析token
+const config = require("./config"); // 配置文件
 
 const app = express();
 const port = 3007;
@@ -22,6 +25,14 @@ app.use(function (req, res, next) {
   next();
 });
 
+/**
+ * 一定要在路由之前配置解析token
+ * 以/api开头的接口，不需要进行token验证
+ * */
+app.use(
+  expressJWT({ secret: config.jwtSecretKey }).unless({ path: [/^\/api\//] })
+);
+
 // 挂载路由
 app.use("/api", userRouter);
 
@@ -30,6 +41,10 @@ app.use((err, req, res, next) => {
   // joi验证失败
   if (err instanceof joi.ValidationError) {
     return res.cc(err);
+  }
+  // 解析token失败
+  if (err.name === "UnauthorizedError") {
+    return res.cc("token认证失败");
   }
 
   // 位置错误
