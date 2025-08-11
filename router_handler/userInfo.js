@@ -1,4 +1,5 @@
 const db = require("../db/index"); // 导入数据库操作模块
+const bcrypt = require("bcryptjs"); // 导入密码加密模块
 
 // 获取用户信息
 exports.getUserInfo = (req, res) => {
@@ -23,5 +24,30 @@ exports.updateUserInfo = (req, res) => {
       return res.cc("更新用户信息失败");
     }
     res.cc("更新用户信息成功", 0);
+  });
+};
+
+// 更新密码
+exports.updatePassword = (req, res) => {
+  // 根据id 查询用户信息
+  const sql = `select * from ev_users where id=?`;
+  db.query(sql, req.user.id, (err, result) => {
+    if (err) return res.cc(err);
+    if (result.length !== 1) return res.cc("用户不存在");
+    // 旧密码和数据库是否一致
+    const compareResult = bcrypt.compareSync(
+      req.body.oldPwd,
+      result[0].password
+    ); // true false
+    if (!compareResult) return res.cc("原密码错误");
+    // 更新密码
+    const updatePwdSql = `update ev_users set password=? where id=?`;
+    // 对新密码进行加密
+    const newPwd = bcrypt.hashSync(req.body.newPwd, 10);
+    db.query(updatePwdSql, [newPwd, req.user.id], (err, result) => {
+      if (err) return res.cc(err);
+      if (result.affectedRows !== 1) return res.cc("更新密码失败");
+      res.cc("更新密码成功", 0);
+    });
   });
 };

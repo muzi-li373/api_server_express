@@ -2,7 +2,10 @@ const express = require("express");
 // 验证数据合法性的中间件
 const expressJoi = require("@escook/express-joi");
 // 导入需要验证的规则对象
-const { update_userInfo_schema } = require("../schema/user");
+const {
+  update_userInfo_schema,
+  update_password_schema,
+} = require("../schema/user");
 const router = express.Router();
 
 // 导入用户路由处理函数
@@ -16,6 +19,13 @@ router.post(
   "/updateUserInfo",
   expressJoi(update_userInfo_schema),
   userInfo_handler.updateUserInfo
+);
+
+// 更新密码
+router.post(
+  "/updatePwd",
+  expressJoi(update_password_schema),
+  userInfo_handler.updatePassword
 );
 
 module.exports = router;
