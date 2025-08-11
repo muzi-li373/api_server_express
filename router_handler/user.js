@@ -49,5 +49,23 @@ exports.regUser = (req, res) => {
 
 // 登录
 exports.login = (req, res) => {
-  res.send("登录成功");
+  // 接收表单的数据
+  const { username, password } = req.body;
+  // 定义sql语句，查询用户名是否存在
+  const sqlStr = "select * from ev_users where username=?";
+  db.query(sqlStr, [username], (err, result) => {
+    if (err) {
+      return res.cc(err);
+    }
+    // 判断用户名是否存在
+    if (result.length !== 1) {
+      return res.cc("登录失败");
+    }
+    // 对比密码
+    const compareResult = bcrypt.compareSync(password, result[0].password);
+    if (!compareResult) {
+      return res.cc("登录失败");
+    }
+    res.send("登录成功");
+  });
 };
