@@ -21,6 +21,10 @@ const email = joi.string().email().required();
 
 // 定义新密码
 const newPwd = joi.not(joi.ref("oldPwd")).concat(password); // 新密码不能等于旧密码,还要符合密码的规则
+// 头像规则(base64编码的图片数据)
+// const avatar = joi.string().dataUri().required();
+// 头像是字符串
+const avatar = joi.string().required();
 
 // 定义验证注册、登录表单的验证规则对象
 exports.reg_login_schema = {
@@ -44,5 +48,12 @@ exports.update_password_schema = {
   body: {
     oldPwd: password,
     newPwd,
+  },
+};
+
+// 更新验证头像规则
+exports.update_avatar_schema = {
+  body: {
+    avatar,
   },
 };

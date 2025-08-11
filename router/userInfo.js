@@ -5,6 +5,7 @@ const expressJoi = require("@escook/express-joi");
 const {
   update_userInfo_schema,
   update_password_schema,
+  update_avatar_schema,
 } = require("../schema/user");
 const router = express.Router();
 
@@ -26,6 +27,13 @@ router.post(
   "/updatePwd",
   expressJoi(update_password_schema),
   userInfo_handler.updatePassword
+);
+
+// 更新头像
+router.post(
+  "/update/avatar",
+  expressJoi(update_avatar_schema),
+  userInfo_handler.updateAvatar
 );
 
 module.exports = router;
