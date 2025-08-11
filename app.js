@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const userRouter = require("./router/user"); // 用户路由
+const userInfoRouter = require("./router/userInfo"); // 用户信息路由
 // 引入Joi进行数据的验证
 const joi = require("@hapi/joi");
 const expressJWT = require("express-jwt"); // 解析token
@@ -35,6 +36,8 @@ app.use(
 
 // 挂载路由
 app.use("/api", userRouter);
+// 挂载用户信息路由
+app.use("/my", userInfoRouter);
 
 // 定义错误级别的中间件
 app.use((err, req, res, next) => {
