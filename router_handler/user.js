@@ -1,6 +1,10 @@
 const db = require("../db/index"); // 数据库模块
 // 密码加密
 const bcrypt = require("bcryptjs");
+// 生成Token
+const jwt = require("jsonwebtoken");
+// 导入全局配置文件
+const config = require("../config");
 
 // 注册新用户
 exports.regUser = (req, res) => {
@@ -66,6 +70,19 @@ exports.login = (req, res) => {
     if (!compareResult) {
       return res.cc("登录失败");
     }
-    res.send("登录成功");
+
+    const user = { ...result[0], password: "", user_pic: "" }; // 返回给客户端的用户信息中，不包含密码
+
+    // 生成Token字符串
+    const token = jwt.sign(user, config.jwtSecretKey, {
+      expiresIn: config.expiresIn, // 过期时间
+    });
+    console.log("🚀 ~ file: user.js:79 ~ token:", token);
+
+    res.send({
+      status: 0,
+      message: "登录成功",
+      token: "Bearer " + token, // 返回给客户端的token字符串
+    });
   });
 };
