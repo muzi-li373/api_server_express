@@ -1,14 +1,10 @@
 const express = require("express");
 const router = express.Router();
 
+// 导入用户路由处理函数
+const userInfo_handler = require("../router_handler/userInfo");
+
 // 获取用户信息
-router.get("/userInfo", (req, res) => {
-  // req.userInfo 是在 app.js 中定义的中间件，用于获取用户信息
-  res.send({
-    status: 0,
-    message: "获取用户信息成功",
-    data: req.user,
-  });
-});
+router.get("/userInfo", userInfo_handler.getUserInfo);
 
 module.exports = router;
