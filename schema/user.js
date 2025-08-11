@@ -14,10 +14,23 @@ const password = joi
   .pattern(/^[\S]{6,12}$/)
   .required();
 
+// 定义id,nickname,email的验证规则对象
+const id = joi.number().integer().min(1).required();
+const nickname = joi.string().required();
+const email = joi.string().email().required();
+
 // 定义验证注册、登录表单的验证规则对象
 exports.reg_login_schema = {
   body: {
     username,
     password,
+  },
+};
+
+exports.update_userInfo_schema = {
+  body: {
+    id,
+    nickname,
+    email,
   },
 };

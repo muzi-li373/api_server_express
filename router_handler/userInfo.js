@@ -12,3 +12,16 @@ exports.getUserInfo = (req, res) => {
     res.send({ status: 0, message: "获取用户信息成功", data: result[0] });
   });
 };
+
+// 更新用户信息
+exports.updateUserInfo = (req, res) => {
+  // 更新用户信息
+  const sql = `update ev_users set ? where id=?`;
+  db.query(sql, [req.body, req.body.id], (err, result) => {
+    if (err) return res.cc(err);
+    if (result.affectedRows !== 1) {
+      return res.cc("更新用户信息失败");
+    }
+    res.cc("更新用户信息成功", 0);
+  });
+};
