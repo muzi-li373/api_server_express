@@ -5,7 +5,11 @@ const expressJoi = require("@escook/express-joi");
 // 文章分类路由模块
 const artCate_handler = require("../router_handler/artcate");
 // 导入文章分类的验证规则
-const { add_cate_schema, update_cate_schema } = require("../schema/artcate");
+const {
+  add_cate_schema,
+  update_cate_schema,
+  delete_cate_schema,
+} = require("../schema/artcate");
 
 const router = express.Router();
 
@@ -24,6 +28,13 @@ router.post(
   "/updatecates",
   expressJoi(update_cate_schema),
   artCate_handler.updateArticleCates
+);
+
+//根据id删除文章分类
+router.get(
+  "/deletecate/:id",
+  expressJoi(delete_cate_schema),
+  artCate_handler.deleteCateById
 );
 
 module.exports = router;

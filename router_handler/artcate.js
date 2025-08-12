@@ -60,3 +60,19 @@ exports.updateArticleCates = (req, res) => {
     res.cc("更新文章分类成功", 0);
   });
 };
+
+// 删除文章分类的路由处理函数
+exports.deleteCateById = (req, res) => {
+  // 定义sql语句
+  const sql = `update ev_article_cate set is_delete=1 where id=?`;
+  // 执行sql语句
+  db.query(sql, req.params.id, (err, results) => {
+    console.log(results);
+
+    if (err) return res.cc(err);
+    if (results.affectedRows !== 1) return res.cc("删除文章分类失败");
+    // 如果id对应的文章分类不存在，则返回错误提示信息
+    if (results.affectedRows === 0) return res.cc("文章分类不存在");
+    res.cc("删除文章分类成功", 0);
+  });
+};

@@ -24,3 +24,9 @@ exports.update_cate_schema = {
     alias,
   },
 };
+
+exports.delete_cate_schema = {
+  params: {
+    id,
+  },
+};
