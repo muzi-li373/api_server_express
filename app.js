@@ -3,6 +3,7 @@ const cors = require("cors");
 const userRouter = require("./router/user"); // 用户路由
 const userInfoRouter = require("./router/userInfo"); // 用户信息路由
 const artCateRouter = require("./router/artcate"); // 文章分类路由
+const articleRouter = require("./router/article"); // 文章内容路由
 
 // 引入Joi进行数据的验证
 const joi = require("@hapi/joi");
@@ -42,6 +43,8 @@ app.use("/api", userRouter);
 app.use("/my", userInfoRouter);
 // 挂载文章分类路由
 app.use("/my/article", artCateRouter);
+// 挂载文章内容路由`
+app.use("/my/article", articleRouter);
 
 // 定义错误级别的中间件
 app.use((err, req, res, next) => {
