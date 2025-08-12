@@ -9,6 +9,7 @@ const {
   add_cate_schema,
   update_cate_schema,
   delete_cate_schema,
+  get_cate_schema,
 } = require("../schema/artcate");
 
 const router = express.Router();
@@ -35,6 +36,13 @@ router.get(
   "/deletecate/:id",
   expressJoi(delete_cate_schema),
   artCate_handler.deleteCateById
+);
+
+// 根据id获取文章分类
+router.get(
+  "/cates/:id",
+  expressJoi(get_cate_schema),
+  artCate_handler.getArtCateById
 );
 
 module.exports = router;
