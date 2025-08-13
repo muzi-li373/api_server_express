@@ -37,36 +37,45 @@ exports.getArticleList = (req, res) => {
   // 根据 state  cate_id pagenum pagesize 生成查询sql语句
   const { state, cate_id, pagenum = 1, pagesize = 10 } = req.query;
 
-  // 构建基础查询语句
-  let sql = "SELECT * FROM ev_articles WHERE is_delete = 0";
+  // 构建查询条件
+  let whereClause = "WHERE is_delete = 0";
   const params = [];
 
   // 根据状态筛选
   if (state) {
-    sql += " AND state = ?";
+    whereClause += " AND state = ?";
     params.push(state);
   }
 
   // 根据分类ID筛选
   if (cate_id) {
-    sql += " AND cate_id = ?";
+    whereClause += " AND cate_id = ?";
     params.push(parseInt(cate_id));
   }
 
-  // 添加排序（按发布时间倒序）
-  sql += " ORDER BY pub_date DESC";
+  // 先查询总条数
+  const countSql = `SELECT COUNT(*) as total FROM ev_articles ${whereClause}`;
 
-  // 添加分页
-  const offset = (parseInt(pagenum) - 1) * parseInt(pagesize);
-  sql += " LIMIT ? OFFSET ?";
-  params.push(parseInt(pagesize), offset);
-
-  db.query(sql, params, (err, results) => {
+  db.query(countSql, params, (err, countResults) => {
     if (err) return res.cc(err);
-    res.send({
-      status: 0,
-      message: "获取文章列表成功",
-      data: results,
+
+    const total = countResults[0].total;
+
+    // 再查询分页数据
+    const offset = (parseInt(pagenum) - 1) * parseInt(pagesize);
+    const dataSql = `SELECT * FROM ev_articles ${whereClause} ORDER BY pub_date DESC LIMIT ? OFFSET ?`;
+    const dataParams = [...params, parseInt(pagesize), offset];
+
+    db.query(dataSql, dataParams, (err, results) => {
+      if (err) return res.cc(err);
+      res.send({
+        status: 0,
+        message: "获取文章列表成功",
+        data: results,
+        total: total, // 总条数
+        pagenum: parseInt(pagenum),
+        pagesize: parseInt(pagesize),
+      });
     });
   });
 };
