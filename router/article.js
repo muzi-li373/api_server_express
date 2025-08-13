@@ -24,4 +24,8 @@ router.post(
   article_handler.addArticle
 );
 
+// 获取文章列表
+router.get("/list", article_handler.getArticleList);
+
+
 module.exports = router;
